@@ -1,0 +1,99 @@
+/* Apply some margin and padding reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Style the body with a full-screen background image */
+body {
+    font-family: 'Arial', sans-serif;
+    background: url('background.jpg') no-repeat center center/cover; /* Full-screen background image */
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    position: relative;
+    overflow: hidden;   
+}
+
+/* Logo in the top-left corner */
+.logo {
+    font-size: 3rem;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    text-shadow: 
+        -1px -1px 0 rgb(0, 0, 0),  /* Top-left white shadow */
+        1px -1px 0 rgb(0, 0, 0),   /* Top-right white shadow */
+        -1px 1px 0 rgb(0, 0, 0),   /* Bottom-left white shadow */
+        1px 1px 0 rgb(0, 0, 0);    /* Bottom-right white shadow */
+
+}
+
+/* Container to hold main content */
+.container {
+    text-align: center;
+    color: white;
+    max-width: 800px;
+}
+
+/* Title styling */
+h1 {
+    font-size: 5rem; /* Increased font size */
+    margin-bottom: 50px;
+    color: rgba(0, 160, 255); /* Yellow-orange color */
+    text-shadow: 
+        -1px -1px 0 #FFFFFF,  /* Top-left white shadow */
+        1px -1px 0 #FFFFFF,   /* Top-right white shadow */
+        -1px 1px 0 #FFFFFF,   /* Bottom-left white shadow */
+        1px 1px 0 #FFFFFF;    /* Bottom-right white shadow */
+    text-decoration-color: rgba(0, 160, 255);
+    text-decoration: underline;
+}
+/* Subtitle styling */
+p {
+    font-size: 1.5rem;
+    margin-bottom: 40px;
+    color: rgb(255, 255, 255); /* Yellow-orange color */
+    text-shadow: 
+        -1px -1px 0 rgb(0, 0, 0),  /* Top-left white shadow */
+        1px -1px 0 rgb(0, 0, 0),   /* Top-right white shadow */
+        -1px 1px 0 rgb(0, 0, 0),   /* Bottom-left white shadow */
+        1px 1px 0 rgb(0, 0, 0);    /* Bottom-right white shadow */
+}
+
+/* Buttons container */
+.buttons {
+    margin-top: 20px;
+}
+
+/* Style the buttons */
+.btn {
+    display: inline-block;
+    padding: 15px 30px;
+    margin: 10px;
+    background-color: rgba(0, 160, 255);
+    border: 2px solid white;
+    border-radius: 25px;
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: background-color 1.25s, border-color 1.25s, transform 1.25s ease;
+}
+
+/* Hover effect for buttons */
+.btn:hover {
+    background-color: white;
+    color: rgba(0, 160, 255);
+    border-color: rgba(0, 160, 255);
+    transform: scale(1.20); /* Slightly enlarge on hover */
+}
+
+/* Ensure background image covers full screen */
+html, body {
+    height: 100%;
+}
