@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion Lowrance</title>
-    <!-- Lien vers le fichier CSS -->
     <link rel="stylesheet" href="styles.connect.css">
-        <!-- Script pour gérer le cooldown -->
+        <!-- Script pour cooldown le bouton de connection pendant 3 secondesn -->
     <script>
-        // Cooldown pour le bouton avec message d'échec après 3 secondes
+        // Désactive le bouton pendant 3 secondes
         function cooldownBouton() {
             var bouton = document.getElementById('submitButton');
             var errorMsg = document.getElementById('error-message');
             errorMsg.innerText = '';  // Réinitialise le message d'erreur s'il existe
             bouton.disabled = true;  // Désactive le bouton
-            bouton.innerText = 'Connexion en cours...';  // Change le texte du bouton
+            bouton.innerText = 'Connexion en cours...';
 
             // Réactive le bouton après 3 secondes
             setTimeout(function() {
@@ -26,7 +25,7 @@
             }, 3000);  // 3000 millisecondes = 3 secondes
         }
 
-        // Validation des caractères (lettres et chiffres seulement)
+        // Verification des caractères (verifie si il n'y a pas de caractères spéciaux)
         function validateInput(event) {
             var regex = /^[a-zA-Z0-9]*$/;
             var input = event.target.value;
@@ -34,10 +33,10 @@
 
             // Si l'input contient autre chose que des lettres ou chiffres, on affiche un message d'erreur
             if (!regex.test(input)) {
-                errorMsg.innerText = 'Seules les lettres et les chiffres sont autorisés.';  // Message en rouge
+                errorMsg.innerText = 'Seules les lettres et les chiffres sont autorisés.';
                 event.target.value = input.replace(/[^a-zA-Z0-9]/g, "");  // Supprime les caractères non valides
             } else {
-                errorMsg.innerText = '';  // Enlève le message si tout est valide
+                errorMsg.innerText = ''; 
             }
         }
     </script>

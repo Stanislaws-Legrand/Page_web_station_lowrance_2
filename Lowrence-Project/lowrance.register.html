@@ -62,7 +62,7 @@
         <!-- Message d'erreur affiché ici -->
         <p id="error-message"></p>
 
-        <form action="/register" method="POST" onsubmit="if (validatePasswordMatch()) { cooldownBouton(); return false; } else { return false; }">
+        <form action="/register" method="POST" onsubmit="cooldownBouton(); return false;">
             <div class="form-group">
                 <label for="username">Nom d'utilisateur :</label>
                 <input type="text" id="username" name="username" required oninput="validateInput(event)">
