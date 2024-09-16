@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription Lowrance</title>
+    <!-- Lien vers le fichier CSS -->
+    <link rel="stylesheet" href="styles.register.css">
+    <!-- Script pour gérer le cooldown, validation et correspondance des mots de passe -->
+    <script>
+        // Cooldown pour le bouton d'inscription avec message d'échec après 3 secondes
+        function cooldownBouton() {
+            var bouton = document.getElementById('submitButton');
+            var errorMsg = document.getElementById('error-message');
+            errorMsg.innerText = '';  // Réinitialise le message d'erreur s'il existe
+            bouton.disabled = true;  // Désactive le bouton
+            bouton.innerText = 'Inscription en cours...';  // Change le texte du bouton
+
+            // Réactive le bouton après 3 secondes
+            setTimeout(function() {
+                bouton.innerText = 'Inscription échouée, réessayer';  // Affiche message d'échec
+                setTimeout(function() {
+                    bouton.disabled = false;  // Réactive le bouton après l'échec
+                    bouton.innerText = 'S\'inscrire';  // Remet le texte d'origine
+                }, 2000);  // Garde "Inscription échouée" pendant 2 secondes
+            }, 3000);  // 3000 millisecondes = 3 secondes
+        }
+
+        // Validation des caractères (lettres et chiffres seulement) pour username et password
+        function validateInput(event) {
+            var regex = /^[a-zA-Z0-9]*$/;
+            var input = event.target.value;
+            var errorMsg = document.getElementById('error-message'); // Récupère l'élément du message d'erreur
+
+            if (!regex.test(input)) {
+                errorMsg.innerText = 'Seules les lettres et les chiffres sont autorisés pour le nom d\'utilisateur et le mot de passe.';  // Message en rouge
+                event.target.value = input.replace(/[^a-zA-Z0-9]/g, "");  // Supprime les caractères non valides
+            } else {
+                errorMsg.innerText = '';  // Enlève le message si tout est valide
+            }
+        }
+
+        // Validation de l'email
+        function validateEmail() {
+            var email = document.getElementById('email').value;
+            var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;  // Expression régulière pour vérifier l'email
+            var errorMsg = document.getElementById('error-message');
+
+            if (!regex.test(email)) {
+                errorMsg.innerText = 'Veuillez entrer une adresse email valide.';
+            } else {
+                errorMsg.innerText = '';
+            }
+        }
+    </script>
+</head>
+<body>
+    <a href="index.html"class="logo">🏠</a>
+    <div class="login-container">
+        <h2>Inscription à Lowrance</h2>
+
+        <!-- Message d'erreur affiché ici -->
+        <p id="error-message"></p>
+
+        <form action="/register" method="POST" onsubmit="cooldownBouton(); return false;">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur :</label>
+                <input type="text" id="username" name="username" required oninput="validateInput(event)">
+            </div>
+            <div class="form-group">
+                <label for="email">Email :</label>
+                <input type="email" id="email" name="email" required oninput="validateEmail()">
+            </div>
+            <div class="form-group">
+                <label for="passwd">Mot de passe :</label>
+                <input type="password" id="passwd" name="passwd" required oninput="validateInput(event)">
+            </div>
+            <div class="form-group">
+                <button type="submit" id="submitButton">S'inscrire</button>
+            </div>
+        </form>
+
+        <!-- Lien pour retourner à la connexion -->
+        <p class="register-text">Déjà un compte ? <a href="lowrance.connect.html" id="login-link">Connectez-vous ici</a></p>
+    </div>
+</body>
+</html>
