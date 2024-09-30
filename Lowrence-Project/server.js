@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mysql = require('mysql');
+const cors = require('cors');
 
 // Clés de sécurité
 const SECRET_KEY = 'votre_clé_secrète';
@@ -13,6 +14,8 @@ const ENCRYPTION_KEY = 'votre_cle_de_chiffrement';
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors());
+
 
 // Connexion à la base de données MySQL
 const db = mysql.createConnection({
@@ -34,26 +37,26 @@ app.post('/login', (req, res) => {
     const { login, passwd } = req.body;
 
     // Vérifier si l'utilisateur existe
-    db.query('SELECT * FROM users WHERE username = ?', [login], async (err, result) => {
+    db.query('SELECT * FROM user WHERE login = ?', [login], async (err, result) => {
         if (err) {
             return res.send('Erreur de base de données.');
         }
-        
+
         if (result.length === 0) {
             return res.send('<p>Nom d\'utilisateur incorrect.</p>');
         }
 
         const user = result[0];
-        const validPassword = await bcrypt.compare(passwd, user.password);
-        
+        const validPassword = await bcrypt.compare(passwd, user.passwd);
+
         if (!validPassword) {
             return res.send('<p>Mot de passe incorrect.</p>');
         }
 
         // Si l'authentification est réussie, générer un token JWT
         const token = jwt.sign(
-            { userId: user.id, username: user.username }, 
-            SECRET_KEY, 
+            { userId: user.id, login: user.login },
+            SECRET_KEY,
             { expiresIn: '1h' }  // Le token expire dans 1 heure
         );
 
@@ -66,15 +69,13 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/register', (req, res) => {
-    const { username, email, passwd } = req.body;
+app.post('/register', async (req, res) => {
+    const { login, email, passwd } = req.body;
 
-    // Vérifier si l'utilisateur existe déjà
-    db.query('SELECT * FROM users WHERE username = ?', [username], async (err, result) => {
-        if (err) {
-            return res.send('Erreur de base de données.');
-        }
-        
+    try {
+        // Vérifier si l'utilisateur existe déjà
+        const [rows] = await db.query('SELECT * FROM user WHERE login = ?', [login]);
+        console.log("Ligne 77 OK")
         if (result.length > 0) {
             return res.send('<p>Nom d\'utilisateur déjà utilisé.</p>');
         }
@@ -83,16 +84,15 @@ app.post('/register', (req, res) => {
         const hashedPassword = await bcrypt.hash(passwd, 10);
 
         // Enregistrer le nouvel utilisateur
-        db.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', 
-                 [username, email, hashedPassword], (err, result) => {
-            if (err) {
-                return res.send('Erreur lors de l\'inscription.');
-            }
-
-            res.send('<p>Inscription réussie !</p>');
-        });
-    });
+        await db.query('INSERT INTO user (login, email, passwd) VALUES (?, ?, ?)',
+            [login, email, hashedPassword]);
+        res.send('<p>Inscription réussie !</p>');
+    } catch (err) {
+        console.log('Erreur lors de l\'inscription:', err);
+        res.send('<p>Inscription échouée, réessayer.</p>');
+    }
 });
+
 
 app.use((req, res, next) => {
     const encryptedToken = req.cookies.authToken;
@@ -120,4 +120,11 @@ app.use((req, res, next) => {
 // Route pour la page station.html
 app.get('/station', (req, res) => {
     res.sendFile(path.join(__dirname, 'station.html'));  // Assurez-vous de donner le bon chemin vers station.html
+});
+
+
+const port = 3000;
+
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });
