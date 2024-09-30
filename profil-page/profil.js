@@ -19,7 +19,7 @@ document.getElementById('changer-photo').addEventListener('change', (event) => {
             formData.append('profilePicture', file);
             formData.append('username', localStorage.getItem('storedusername'));  // Ajouter le nom d'utilisateur
 
-            fetch('http://192.168.64.194:3000/changer-photo', {
+            fetch('http://192.168.65.251:3000/changer-photo', {
                 method: 'PUT',
                 body: formData,
                 headers: {
@@ -53,7 +53,7 @@ document.getElementById('edit-name-button').addEventListener('click', () => {
         localStorage.setItem('storedusername', newUsername);
 
         // Envoie une requête PUT au serveur pour mettre à jour le nom dans la base de données
-        fetch('http://192.168.64.194:3000/changer-nom', {
+        fetch('http://192.168.65.251:3000/changer-nom', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -94,7 +94,7 @@ document.getElementById('change-password-button').addEventListener('click', () =
         const newPassword = prompt("Entrez le nouveau mot de passe:");
         if (newPassword) {
             // Envoyer la requête PUT pour changer le mot de passe
-            fetch(`http://192.168.64.194:3000/changer-motdepasse`, {
+            fetch(`http://192.168.65.251:3000/changer-motdepasse`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userId = localStorage.getItem('storedusername');
 
     if (userId) {
-        fetch(`http://192.168.64.194:3000/user/${userId}`)
+        fetch(`http://192.168.65.251:3000/user/${userId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Erreur dans la requête: ' + response.status);
@@ -204,7 +204,7 @@ document.getElementById("supprimer-compte").addEventListener("click", function()
     }
 
     // Envoyer une requête DELETE au backend pour supprimer le compte
-    fetch('http://192.168.64.194:3000/supprimer', {
+    fetch('http://192.168.65.251:3000/supprimer', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',

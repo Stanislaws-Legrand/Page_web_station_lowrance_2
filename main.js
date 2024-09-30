@@ -57,7 +57,7 @@ document.getElementById("show-login").addEventListener("click", function() {
       }
   
       // Effectuer la requête POST avec FormData
-      const response = await fetch('http://192.168.64.194:3000/register', {
+      const response = await fetch('http://192.168.65.251:3000/register', {
           method: 'POST',
           body: formData,  // Pas besoin de spécifier les headers, fetch les gère automatiquement pour FormData
       });
@@ -106,7 +106,7 @@ document.getElementById("show-login").addEventListener("click", function() {
       
   
       try {
-          const response = await fetch('http://192.168.64.194:3000/login', {
+          const response = await fetch('http://192.168.65.251:3000/login', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ username, password })
