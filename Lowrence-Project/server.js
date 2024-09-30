@@ -1,130 +1,87 @@
+// Importation des modules nécessaires
 const express = require('express');
-const jwt = require('jsonwebtoken');
-const CryptoJS = require('crypto-js');
+const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const mysql = require('mysql');
 const cors = require('cors');
 
-// Clés de sécurité
-const SECRET_KEY = 'votre_clé_secrète';
-const ENCRYPTION_KEY = 'votre_cle_de_chiffrement';
-
+// Initialisation de l'application Express
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(cors());
+const PORT = 3000;
 
+// Middleware
+app.use(bodyParser.json());
+app.use(cors());  // Permet les requêtes CORS si nécessaire
 
-// Connexion à la base de données MySQL
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'Lowrence',
-    password: 'AZERTY',
-    database: 'Lowrence'
-});
-
-db.connect((err) => {
+// Connexion à la base de données SQLite
+const db = new sqlite3.Database('./users.db', (err) => {
     if (err) {
-        console.log('Erreur de connexion à la base de données:', err);
+        console.error(err.message);
     } else {
-        console.log('Connexion réussie à la base de données.');
+        console.log('Connecté à la base de données SQLite.');
     }
 });
 
-app.post('/login', (req, res) => {
-    const { login, passwd } = req.body;
+// Création de la table des utilisateurs si elle n'existe pas
+db.run(`CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    login TEXT UNIQUE,
+    password TEXT,
+    email TEXT UNIQUE
+)`);
 
-    // Vérifier si l'utilisateur existe
-    db.query('SELECT * FROM user WHERE login = ?', [login], async (err, result) => {
+// Route d'inscription
+app.post('/register', (req, res) => {
+    const { login, password, email } = req.body;
+
+    // Hachage du mot de passe
+    bcrypt.hash(password, 10, (err, hash) => {
         if (err) {
-            return res.send('Erreur de base de données.');
+            return res.status(500).json({ error: 'Erreur lors du hachage du mot de passe.' });
         }
 
-        if (result.length === 0) {
-            return res.send('<p>Nom d\'utilisateur incorrect.</p>');
-        }
-
-        const user = result[0];
-        const validPassword = await bcrypt.compare(passwd, user.passwd);
-
-        if (!validPassword) {
-            return res.send('<p>Mot de passe incorrect.</p>');
-        }
-
-        // Si l'authentification est réussie, générer un token JWT
-        const token = jwt.sign(
-            { userId: user.id, login: user.login },
-            SECRET_KEY,
-            { expiresIn: '1h' }  // Le token expire dans 1 heure
-        );
-
-        // Chiffrer le token JWT avec AES
-        const encryptedToken = CryptoJS.AES.encrypt(token, ENCRYPTION_KEY).toString();
-
-        // Enregistrer le token dans la session ou dans les cookies
-        res.cookie('authToken', encryptedToken, { httpOnly: true, secure: true });
-        res.redirect('/station');
+        // Insertion dans la base de données
+        db.run(`INSERT INTO users (login, password, email) VALUES (?, ?, ?)`, [login, hash, email], function(err) {
+            if (err) {
+                return res.status(400).json({ error: 'Nom d\'utilisateur ou email déjà utilisés.' });
+            }
+            res.status(201).json({ message: 'Utilisateur créé avec succès!', userId: this.lastID });
+        });
     });
 });
 
-app.post('/register', async (req, res) => {
-    const { login, email, passwd } = req.body;
+// Route de connexion
+app.post('/login', (req, res) => {
+    const { login, password } = req.body;
 
-    try {
-        // Vérifier si l'utilisateur existe déjà
-        const [rows] = await db.query('SELECT * FROM user WHERE login = ?', [login]);
-        console.log("Ligne 77 OK")
-        if (result.length > 0) {
-            return res.send('<p>Nom d\'utilisateur déjà utilisé.</p>');
+    // Recherche de l'utilisateur dans la base de données
+    db.get(`SELECT * FROM users WHERE login = ?`, [login], (err, user) => {
+        if (err || !user) {
+            return res.status(401).json({ error: 'Nom d\'utilisateur ou mot de passe incorrect.' });
         }
 
-        // Hacher le mot de passe avant de l'enregistrer
-        const hashedPassword = await bcrypt.hash(passwd, 10);
-
-        // Enregistrer le nouvel utilisateur
-        await db.query('INSERT INTO user (login, email, passwd) VALUES (?, ?, ?)',
-            [login, email, hashedPassword]);
-        res.send('<p>Inscription réussie !</p>');
-    } catch (err) {
-        console.log('Erreur lors de l\'inscription:', err);
-        res.send('<p>Inscription échouée, réessayer.</p>');
-    }
+        // Vérification du mot de passe
+        bcrypt.compare(password, user.password, (err, result) => {
+            if (err || !result) {
+                return res.status(401).json({ error: 'Nom d\'utilisateur ou mot de passe incorrect.' });
+            }
+            res.status(200).json({ message: 'Connexion réussie!' });
+        });
+    });
 });
 
-
-app.use((req, res, next) => {
-    const encryptedToken = req.cookies.authToken;
-
-    if (!encryptedToken) {
-        return res.redirect('/login');
-    }
-
-    try {
-        // Décrypter le token
-        const bytes = CryptoJS.AES.decrypt(encryptedToken, ENCRYPTION_KEY);
-        const decryptedToken = bytes.toString(CryptoJS.enc.Utf8);
-
-        // Vérifier le token JWT
-        const decoded = jwt.verify(decryptedToken, SECRET_KEY);
-
-        // Si le token est valide, stocker les informations dans la requête
-        req.user = decoded;
-        next();
-    } catch (err) {
-        return res.redirect('/login');
-    }
+// Démarrage du serveur
+app.listen(PORT, () => {
+    console.log(`Serveur en cours d'exécution sur http://localhost:${PORT}`);
 });
 
-// Route pour la page station.html
-app.get('/station', (req, res) => {
-    res.sendFile(path.join(__dirname, 'station.html'));  // Assurez-vous de donner le bon chemin vers station.html
-});
-
-
-const port = 3000;
-
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+// Gestion de la fermeture de la base de données
+process.on('SIGINT', () => {
+    db.close((err) => {
+        if (err) {
+            console.error(err.message);
+        }
+        console.log('Connexion à la base de données fermée.');
+        process.exit(0);
+    });
 });

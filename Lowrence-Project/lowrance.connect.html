@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion Lowrance</title>
     <link rel="stylesheet" href="styles.connect.css">
-        <!-- Script pour cooldown le bouton de connection pendant 3 secondesn -->
     <script>
-        // Désactive le bouton pendant 3 secondes
         function cooldownBouton() {
             var bouton = document.getElementById('submitButton');
             var errorMsg = document.getElementById('error-message');
@@ -25,13 +23,12 @@
             }, 3000);  // 3000 millisecondes = 3 secondes
         }
 
-        // Verification des caractères (verifie si il n'y a pas de caractères spéciaux)
+        // Validation des caractères (lettres et chiffres seulement)
         function validateInput(event) {
             var regex = /^[a-zA-Z0-9]*$/;
             var input = event.target.value;
-            var errorMsg = document.getElementById('error-message'); // Récupère l'élément du message d'erreur
+            var errorMsg = document.getElementById('error-message');
 
-            // Si l'input contient autre chose que des lettres ou chiffres, on affiche un message d'erreur
             if (!regex.test(input)) {
                 errorMsg.innerText = 'Seules les lettres et les chiffres sont autorisés.';
                 event.target.value = input.replace(/[^a-zA-Z0-9]/g, "");  // Supprime les caractères non valides
@@ -42,21 +39,21 @@
     </script>
 </head>
 <body>
-    <a href="index.html"class="logo">🏠</a>
+    <a href="index.html" class="logo">🏠</a>
     <div class="login-container">
         <h2>Connexion à Lowrance</h2>
 
         <!-- Message d'erreur affiché ici -->
         <p id="error-message"></p>
 
-        <form action="/login" method="POST" onsubmit="cooldownBouton(); return false;">
+        <form action="/login" method="POST" onsubmit="cooldownBouton(); return true;">
             <div class="form-group">
-                <label for="login">Login (Nom d'utilisateur) :</label>
+                <label for="login">Nom d'utilisateur :</label>
                 <input type="text" id="login" name="login" required oninput="validateInput(event)">
             </div>
             <div class="form-group">
-                <label for="passwd">Mot de passe :</label>
-                <input type="password" id="passwd" name="passwd" required oninput="validateInput(event)">
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" name="password" required oninput="validateInput(event)">
             </div>
             <div class="form-group">
                 <button type="submit" id="submitButton">Se connecter</button>

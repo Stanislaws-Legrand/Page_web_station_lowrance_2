@@ -13,16 +13,16 @@
     display: flex;
     align-items: center;
     text-shadow: 
-        -1px -1px 0 rgb(0, 0, 0),  /* Top-left white shadow */
-        1px -1px 0 rgb(0, 0, 0),   /* Top-right white shadow */
-        -1px 1px 0 rgb(0, 0, 0),   /* Bottom-left white shadow */
-        1px 1px 0 rgb(0, 0, 0);    /* Bottom-right white shadow */
+        -1px -1px 0 rgb(0, 0, 0),  
+        1px -1px 0 rgb(0, 0, 0), 
+        -1px 1px 0 rgb(0, 0, 0),  
+        1px 1px 0 rgb(0, 0, 0);  
 
 }
 
 body {
     font-family: 'Arial', sans-serif;
-    background: url('background.jpg') no-repeat center center/cover; /* Full-screen background image */
+    background: url('background.jpg') no-repeat center center/cover; 
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -32,13 +32,11 @@ body {
     overflow: hidden;   
 }
 
-/* Message d'erreur en rouge */
 #error-message {
     color: red;
     margin-bottom: 10px;
 }
 
-/* Lien vers la page de connexion en bleu */
 #login-link {
     color: #0056b3;
     text-decoration: underline;
@@ -48,12 +46,10 @@ body {
     font-weight: bold;
 }
 
-/* Texte gris pour "Déjà un compte ?" */
 .register-text {
     color: #333;
 }
 
-/* Styles pour la mise en page du formulaire d'inscription */
 .login-container {
     background-color: #ffffff;
     padding: 20px;
@@ -95,7 +91,6 @@ h2 {
     margin-top: 5px;
 }
 
-/* Styles du bouton de soumission */
 .form-group button {
     width: 100%;
     padding: 10px;
