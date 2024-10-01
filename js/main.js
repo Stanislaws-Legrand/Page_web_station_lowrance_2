@@ -40,9 +40,9 @@ document.getElementById("show-login").addEventListener("click", function() {
   document.getElementById('registerform').addEventListener('submit', async function(event) {
       event.preventDefault();
   
-      const username = document.getElementById('registerUsername').value;
+      const username = document.getElementById('loginre').value;
       localStorage.setItem('storedusername', username);
-      const password = document.getElementById('registerPassword').value;
+      const password = document.getElementById('passwordre').value;
       const fileInput = document.getElementById('PDP');  // Récupérer l'élément input file
       const file = fileInput.files[0];  // Récupérer le premier fichier sélectionné
   
@@ -98,11 +98,11 @@ document.getElementById("show-login").addEventListener("click", function() {
   
       console.log("Lancement login");
   
-      const username = document.getElementById('loginUsername').value;
+      const username = document.getElementById('login').value;
       /*******************Keep Login*************************/
       localStorage.setItem('storedusername', username);
       /* */
-      const password = document.getElementById('loginPassword').value;
+      const password = document.getElementById('password').value;
       
   
       try {
