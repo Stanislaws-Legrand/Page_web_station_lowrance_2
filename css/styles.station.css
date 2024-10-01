@@ -8,7 +8,7 @@
 /* Style the body with a full-screen background image */
 body {
     font-family: 'Arial', sans-serif;
-    background: url('background.jpg') no-repeat center center/cover; /* Full-screen background image */
+    background: url('../images/background.jpg') no-repeat center center/cover; /* Full-screen background image */
     height: 100vh;
     display: flex;
     justify-content: center;
